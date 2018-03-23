@@ -43,7 +43,8 @@ var _ server.Option
 // Client API for VesselService service
 
 type VesselServiceClient interface {
-	FindAvailable(ctx context.Context, in *Spesification, opts ...client.CallOption) (*Response, error)
+	CreateVessel(ctx context.Context, in *Vessel, opts ...client.CallOption) (*Response, error)
+	FindAvailableVessel(ctx context.Context, in *Spesification, opts ...client.CallOption) (*Response, error)
 }
 
 type vesselServiceClient struct {
@@ -64,8 +65,18 @@ func NewVesselServiceClient(serviceName string, c client.Client) VesselServiceCl
 	}
 }
 
-func (c *vesselServiceClient) FindAvailable(ctx context.Context, in *Spesification, opts ...client.CallOption) (*Response, error) {
-	req := c.c.NewRequest(c.serviceName, "VesselService.FindAvailable", in)
+func (c *vesselServiceClient) CreateVessel(ctx context.Context, in *Vessel, opts ...client.CallOption) (*Response, error) {
+	req := c.c.NewRequest(c.serviceName, "VesselService.CreateVessel", in)
+	out := new(Response)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vesselServiceClient) FindAvailableVessel(ctx context.Context, in *Spesification, opts ...client.CallOption) (*Response, error) {
+	req := c.c.NewRequest(c.serviceName, "VesselService.FindAvailableVessel", in)
 	out := new(Response)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -77,7 +88,8 @@ func (c *vesselServiceClient) FindAvailable(ctx context.Context, in *Spesificati
 // Server API for VesselService service
 
 type VesselServiceHandler interface {
-	FindAvailable(context.Context, *Spesification, *Response) error
+	CreateVessel(context.Context, *Vessel, *Response) error
+	FindAvailableVessel(context.Context, *Spesification, *Response) error
 }
 
 func RegisterVesselServiceHandler(s server.Server, hdlr VesselServiceHandler, opts ...server.HandlerOption) {
@@ -88,6 +100,10 @@ type VesselService struct {
 	VesselServiceHandler
 }
 
-func (h *VesselService) FindAvailable(ctx context.Context, in *Spesification, out *Response) error {
-	return h.VesselServiceHandler.FindAvailable(ctx, in, out)
+func (h *VesselService) CreateVessel(ctx context.Context, in *Vessel, out *Response) error {
+	return h.VesselServiceHandler.CreateVessel(ctx, in, out)
+}
+
+func (h *VesselService) FindAvailableVessel(ctx context.Context, in *Spesification, out *Response) error {
+	return h.VesselServiceHandler.FindAvailableVessel(ctx, in, out)
 }

@@ -1,8 +1,12 @@
-FROM debian:latest
+FROM golang:1.10 AS build-env
 
-RUN mkdir -p /app
+WORKDIR /go/src/github.com/murillio4/golang-microservice/vessel-service
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo .
+
+# final stage
+FROM alpine
 WORKDIR /app
-
-ADD vessel-service /app/vessel-service
-
-CMD ["./vessel-service"]
+COPY --from=build-env /go/src/github.com/murillio4/golang-microservice/vessel-service /app/.
+ENTRYPOINT ./vessel-service
