@@ -22,7 +22,7 @@ func (s *service) CreateConsignment(ctx context.Context, req *pb.Consignment, re
 	repo := s.GetRepo()
 	defer repo.Close()
 
-	vRes, err := s.vClient.FindAvailable(context.Background(), &vpb.Spesification{
+	vRes, err := s.vClient.FindAvailableVessel(context.Background(), &vpb.Spesification{
 		MaxWeight: req.GetWeight(),
 		Capacity:  int32(len(req.GetContainers())),
 	})
