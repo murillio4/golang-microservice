@@ -30,7 +30,7 @@ func (srv *service) Get(ctx context.Context, req *pb.User, res *pb.Response) err
 	return nil
 }
 
-func (srv *service) GetAll(ctx context.Context, req *pb.User, res *pb.Response) error {
+func (srv *service) GetAll(ctx context.Context, req *pb.Request, res *pb.Response) error {
 	users, err := srv.repo.GetAll()
 	if err != nil {
 		return err
