@@ -47,7 +47,7 @@ var _ server.Option
 type UserServiceClient interface {
 	Create(ctx context.Context, in *User, opts ...client.CallOption) (*Response, error)
 	Get(ctx context.Context, in *User, opts ...client.CallOption) (*Response, error)
-	GetAll(ctx context.Context, in *User, opts ...client.CallOption) (*Response, error)
+	GetAll(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 	Auth(ctx context.Context, in *User, opts ...client.CallOption) (*Token, error)
 	ValidateToken(ctx context.Context, in *Token, opts ...client.CallOption) (*Token, error)
 }
@@ -90,7 +90,7 @@ func (c *userServiceClient) Get(ctx context.Context, in *User, opts ...client.Ca
 	return out, nil
 }
 
-func (c *userServiceClient) GetAll(ctx context.Context, in *User, opts ...client.CallOption) (*Response, error) {
+func (c *userServiceClient) GetAll(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error) {
 	req := c.c.NewRequest(c.serviceName, "UserService.GetAll", in)
 	out := new(Response)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -125,7 +125,7 @@ func (c *userServiceClient) ValidateToken(ctx context.Context, in *Token, opts .
 type UserServiceHandler interface {
 	Create(context.Context, *User, *Response) error
 	Get(context.Context, *User, *Response) error
-	GetAll(context.Context, *User, *Response) error
+	GetAll(context.Context, *Request, *Response) error
 	Auth(context.Context, *User, *Token) error
 	ValidateToken(context.Context, *Token, *Token) error
 }
@@ -146,7 +146,7 @@ func (h *UserService) Get(ctx context.Context, in *User, out *Response) error {
 	return h.UserServiceHandler.Get(ctx, in, out)
 }
 
-func (h *UserService) GetAll(ctx context.Context, in *User, out *Response) error {
+func (h *UserService) GetAll(ctx context.Context, in *Request, out *Response) error {
 	return h.UserServiceHandler.GetAll(ctx, in, out)
 }
 
